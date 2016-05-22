@@ -19,20 +19,20 @@ public class AddDescriptionActivity extends AppCompatActivity {
 
     private Mood moodToEdit = null;
     private EditText etDescriptionText;
+    private CheckBox cbPeriod;
     private int moodCategory;
-    private boolean isPeriod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_description);
 
-        if (getIntent().getSerializableExtra(MainActivity.KEY_MOOD) != null) {
-            moodToEdit = (Mood) getIntent().getSerializableExtra(MainActivity.KEY_MOOD);
+        if (getIntent().getSerializableExtra(MainActivity.KEY_EDIT) != null) {
+            moodToEdit = (Mood) getIntent().getSerializableExtra(MainActivity.KEY_EDIT);
         }
 
         etDescriptionText = (EditText) findViewById(R.id.etDescription);
-
+        cbPeriod = (CheckBox) findViewById(R.id.cbPeriod);
         Button btnSave = (Button) findViewById(R.id.btnSave);
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,16 +43,6 @@ public class AddDescriptionActivity extends AppCompatActivity {
 
         if (moodToEdit != null) {
             etDescriptionText.setText(moodToEdit.getDescription());
-        }
-    }
-
-    public void itemClicked(View v) {
-        //code to check if this checkbox is checked!
-        CheckBox checkBox = (CheckBox) findViewById(R.id.cbPeriod);
-        if(checkBox.isChecked()){
-            isPeriod = true;
-        } else{
-            isPeriod = false;
         }
     }
 
@@ -80,7 +70,7 @@ public class AddDescriptionActivity extends AppCompatActivity {
                     todoResult.setCategory("ok");
                     break;
             }
-            todoResult.setPeriod(isPeriod);
+            todoResult.setPeriod(cbPeriod.isChecked());
             intentResult.putExtra(KEY_TODO, todoResult);
             setResult(RESULT_OK, intentResult);
             finish();

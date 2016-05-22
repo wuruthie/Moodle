@@ -13,9 +13,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-
-import hu.ait.android.moodle.MainActivity;
 import hu.ait.android.moodle.R;
+import hu.ait.android.moodle.ViewMoodListActivity;
 import hu.ait.android.moodle.data.Mood;
 
 /**
@@ -44,6 +43,7 @@ public class TodoAdapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
+
         Calendar c = Calendar.getInstance();
         System.out.println("Current time => " + c.getTime());
 
@@ -54,7 +54,7 @@ public class TodoAdapter
         holder.btnViewDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) context).showViewMoodActivity(moods.get(position), position);
+                ((ViewMoodListActivity) context).showMoodActivity(moods.get(position), position);
             }
         });
     }
@@ -110,7 +110,7 @@ public class TodoAdapter
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         //add in stuff to display mood
-        //ImageView Mood
+        //ImageView mood
         private TextView tvDate;
         private Button btnViewDetails;
 

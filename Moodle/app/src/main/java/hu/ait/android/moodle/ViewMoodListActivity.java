@@ -22,12 +22,10 @@ import hu.ait.android.moodle.data.Mood;
 /**
  * Created by ruthwu on 5/22/16.
  */
-public class ViewMoodListActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
-    public static final String KEY_MOOD_LIST = "KEY_MOOD_LIST";
-    public static final String KEY_MOOD= "KEY_MOOD";
-    public static final int REQUEST_CODE_VIEW_MOOD = 102;
-    public static final int REQUEST_CODE_VIEW_MOOD_LIST = 101;
+public class ViewMoodListActivity extends AppCompatActivity{
+    public static final String KEY_EDIT= "KEY_EDIT";
+    public static final int FLAG_ACTIVITY_CLEAR_TOP = 102;
+    public static final int REQUEST_CODE_EDIT_TODO = 101;
     public static final int REQUEST_CODE_ADD_TODO = 100;
 
     private TodoAdapter todoRecyclerAdapter;
@@ -37,7 +35,7 @@ public class ViewMoodListActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_view_mood_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -56,19 +54,26 @@ public class ViewMoodListActivity extends AppCompatActivity
                 new TodoItemTouchHelperCallback(todoRecyclerAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(recyclerView);
-
-
-        //NAV
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
     }
+
+
+    public void showMoodActivity(Mood moodToEdit, int position) {
+        Intent intentEditTodo = new Intent(ViewMoodListActivity.this,
+                AddDescriptionActivity.class);
+        todoEditHolder = moodToEdit;
+        todoToEditPosition = position;
+
+        intentEditTodo.putExtra(KEY_EDIT, moodToEdit);
+        startActivityForResult(intentEditTodo, REQUEST_CODE_EDIT_TODO);
+    }
+
+    public void showMainActivity(){
+            Intent intentAddTodo = new Intent(ViewMoodListActivity.this, MainActivity
+                    .class);
+            startActivityForResult(intentAddTodo,
+                    FLAG_ACTIVITY_CLEAR_TOP);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -79,9 +84,9 @@ public class ViewMoodListActivity extends AppCompatActivity
                             AddDescriptionActivity.KEY_TODO);
 
                     todoRecyclerAdapter.addTodo(mood);
-                } else if (requestCode == REQUEST_CODE_VIEW_MOOD) {
+                } else if (requestCode == REQUEST_CODE_EDIT_TODO) {
                     Mood todoTemp = (Mood) data.getSerializableExtra(
-                            ViewMoodActivity.KEY_TODO);
+                            AddDescriptionActivity.KEY_TODO);
 
                     todoEditHolder.setCategory(todoTemp.getCategory());
                     todoEditHolder.setPeriod(todoTemp.isPeriod());
@@ -101,22 +106,6 @@ public class ViewMoodListActivity extends AppCompatActivity
         }
     }
 
-    public void showViewMoodListActivity(){
-        Intent intentAddTodo = new Intent(ViewMoodListActivity.this, ViewMoodListActivity.class);
-        startActivityForResult(intentAddTodo,
-                REQUEST_CODE_VIEW_MOOD_LIST);
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -126,39 +115,15 @@ public class ViewMoodListActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_back:
+                showMainActivity();
+                break;
+            default:
+                break;
         }
 
-        return super.onOptionsItemSelected(item);
-    }
-
-    public void closeDrawer(){
-        DrawerLayout mDrawerLayout;
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerLayout.closeDrawers();
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_log) {
-            closeDrawer();
-        } else if (id == R.id.nav_view) {
-            showViewMoodListActivity();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

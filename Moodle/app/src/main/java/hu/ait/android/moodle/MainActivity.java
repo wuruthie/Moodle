@@ -2,11 +2,6 @@ package hu.ait.android.moodle;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,24 +12,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-
-import hu.ait.android.moodle.adapter.TodoAdapter;
-import hu.ait.android.moodle.adapter.TodoItemTouchHelperCallback;
-import hu.ait.android.moodle.data.Mood;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    public static final String KEY_MOOD = "KEY_MOOD";
-    public static final int REQUEST_CODE_VIEW_MOOD = 102;
+    public static final String KEY_EDIT = "KEY_EDIT";
     public static final int REQUEST_CODE_VIEW_MOOD_LIST = 101;
-    public static final int REQUEST_CODE_ADD_TODO = 100;
+    public static final int REQUEST_CODE_ADD_TODO = 104;
 
-
-    private TodoAdapter todoRecyclerAdapter;
-    private Mood todoEditHolder;
-    private int todoToEditPosition = -1;
     public static int category = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,16 +69,6 @@ public class MainActivity extends AppCompatActivity
         });
 
     }
-
-    public void showViewMoodActivity(Mood todo, int position){
-        Intent intentViewWeather = new Intent(MainActivity.this, ViewMoodActivity.class);
-        todoEditHolder = todo;
-        todoToEditPosition = position;
-
-        intentViewWeather.putExtra(KEY_MOOD, todo.getCategory());
-        startActivityForResult(intentViewWeather, REQUEST_CODE_VIEW_MOOD_LIST);
-    }
-
     private void showAddDescriptionActivity() {
         Intent intentAddTodo = new Intent(MainActivity.this, AddDescriptionActivity.class);
         startActivityForResult(intentAddTodo,
@@ -106,6 +81,7 @@ public class MainActivity extends AppCompatActivity
         startActivityForResult(intentAddTodo,
                 REQUEST_CODE_VIEW_MOOD_LIST);
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
